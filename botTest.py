@@ -23,7 +23,6 @@ async def add(left : int, right : int):
     """Adds two numbers together."""
     await bot.say(left + right)
 
-
 @bot.command(description='For when you wanna settle the score some other way.')
 async def choose(*choices : str):
     """Chooses between multiple choices."""
@@ -35,9 +34,10 @@ async def _bot():
     await bot.say('Yes, the bot is cool.')
 
 @bot.command(description='For when you are bored, the bot will play with you.')
-async def play():
+async def play(*miniToe : str):
     """Play a game of TicTacToe with the bot"""
-    await bot.say('I still don\'t know how to play this game, wait please.')
-
+    await bot.say('I still don\'t know how to play this game yet. Please wait.')
+    snake = miniToe
+    await bot.say(snake)
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
