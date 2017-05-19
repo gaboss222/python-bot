@@ -37,8 +37,10 @@ async def choose(*choices : str):
 @bot.command(name='bot')
 async def _bot():
     """Is the bot cool?"""
-
     await bot.say('Yes, the bot is cool.')
+
+    channel = bot.get_channel(id='314664198971850752')
+    await bot.send_file(destination=channel, fp='./assets/dice.png', filename='dice.png')
 
 @bot.command()
 async def enought():

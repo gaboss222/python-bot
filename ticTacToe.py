@@ -10,6 +10,13 @@ def displayTable():
                 " C |   |   |   \n```")
     return table
 
+def pathTable():
+    '''Return the filename of the game_table.png'''
+    #on créé une image avec "import Image" en bitmap. :-)
+
+    filename='dice.png'
+    return filename
+
 def displayWinner():
     '''Return a string with the final state of the game (win, lose, draw).'''
 
