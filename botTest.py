@@ -3,20 +3,17 @@ from discord.ext import commands
 import random
 import asyncio
 import logging
+import string
 
 from discord.client import log
 
-description = '''Have fun! :-)'''
+description = '''Python bot project by Florian Fasmeyer & Gabriel Mc.Gaben'''
 bot = commands.Bot(command_prefix='!', description=description)
+failedAttempt = 0
 
-#log.setLevel(logging.DEBUG)
-#log.addHandler(logging.StreamHandler())
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
-
-
-@bot.event
-async def on_ready():
-    await bot.say('Hello World!')
 
 @bot.command()
 async def add(left : int, right : int):
@@ -34,10 +31,29 @@ async def _bot():
     await bot.say('Yes, the bot is cool.')
 
 @bot.command(description='For when you are bored, the bot will play with you.')
-async def play(*miniToe : str):
+async def play(miniToe : str):
     """Play a game of TicTacToe with the bot"""
-    await bot.say('I still don\'t know how to play this game yet. Please wait.')
-    snake = miniToe
-    await bot.say(snake)
+    temp = miniToe
+    global failedAttempt
+
+    if(len(temp)==2 and temp[0] in {"a","b","c"} and temp[1] in {"1","2","3"}):
+
+        await bot.say("You played "+ temp[0] + temp[1] +".")
+        failedAttempt = 0
+
+        #Use thoses variables to encode the game! :-)
+        line = temp[0]
+        column = int(temp[1])
+
+    else:
+
+        if(failedAttempt>0):
+
+            await bot.say("Input a position [line, column].\n"+
+                          "Example: \"a1\"")
+        else:
+
+            await bot.say("What's your move? [line, column]")
+            failedAttempt+=1
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
