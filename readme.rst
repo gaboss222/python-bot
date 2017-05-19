@@ -10,7 +10,10 @@ et Florian Fasmeyer [#ff]_
    Introduction
 ----------------
 
-Ce bot permettra de faire une partie de Tic-Tac-Toe sur Discord.
-Pour rentrer un numéro de case, le joueur devra rentrer un numéro (soit de 1 à 9, soit comme les échecs, a1, a2, etc.).
-Le bot disposera d'une petite intelligence artificielle..
-L'affichage du board et des X et O se fera via des images.
+Ce bot permet de jouer une partie de Tic-Tac-Toe sur Discord.
+
+Le joueur peut sélectionner la case qu'il veut cocher en entrant
+sa position sur la grille, exemple: "a1"
+
+L'affichage de la grille[X,O] se fait via des images haute qualité,
+pour un comfort de lecture optimal.
