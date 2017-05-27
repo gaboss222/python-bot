@@ -82,7 +82,7 @@ async def play(*miniToe : str):
             failedAttempt+=1
 
 async def startGame():
-    """Start the game, randomly choos who will be first."""
+    """Start the game, randomly choose who will be first."""
 
     await bot.say("Let's play!")
     await bot.say(t.displayTable())
