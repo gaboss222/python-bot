@@ -11,7 +11,7 @@ def displayTable():
     return table
 
 def pathTable():
-    '''Return the filename of the game_table.png'''
+    '''Return the filename of the game_table.png.'''
     #on créé une image avec "import Image" en bitmap. :-)
 
     filename='dice.png'
@@ -28,6 +28,6 @@ def nextMove(line, column):
     return True #is okey!
 
 def isGameInProgress():
-    '''Return true if game in process. Game end when one win or if we have a draw'''
+    '''Return true if game in process. Game end when one win or if we have a draw.'''
 
     return True

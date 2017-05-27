@@ -6,7 +6,7 @@ import asyncio
 import logging
 import ticTacToe as t
 
-"""A bot capable of playing ticTacToe and do many other useless things, enjoy!"""
+"""A bot capable of playing ticTacToe and do many other useless things, enjoy."""
 
 description = """Python bot project by Florian Fasmeyer & Gabriel Mc.Gaben."""
 bot = commands.Bot(command_prefix='!', description=description)
@@ -44,7 +44,7 @@ async def _bot():
 
 @bot.command()
 async def enought():
-    """When you had enought!"""
+    """When you had enought."""
 
     await bot.say('https://i.ytimg.com/vi/Yx0qSdfvF7Y/maxresdefault.jpg')
     await bot.say('When you had enought! :-(')
