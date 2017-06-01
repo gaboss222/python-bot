@@ -33,9 +33,17 @@ def start():
 
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
+	if isSpaceFree(line, column):
+		arr[[line][column]] = 'X'
+		return True
+     #is okey!
 
-    return True #is okey!
-
+def isSpaceFree(line, column):
+	if(arr[[line][column]]):
+		return True
+	else
+		return False
+	
 def isGameInProgress():
     '''Return true if game in process. Game end when one win or if we have a draw.'''
 
