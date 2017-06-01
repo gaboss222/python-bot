@@ -84,6 +84,7 @@ async def play(*miniToe : str):
 async def startGame():
     """Start the game, randomly choose who will be first."""
 
+    t.start()
     await bot.say("Let's play!")
     await bot.say(t.displayTable())
 
