@@ -65,9 +65,10 @@ async def play(*miniToe : str):
         isPlaying = True
     elif(len(temp)==2 and temp[0] in {"a","b","c"} and temp[1] in {"1","2","3"}):
 
+        dict = {'a': '0', 'b': '1', 'c': '2'}
         failedAttempt = 0
-        line = temp[0]
-        column = temp[1]
+        line = dict[temp[0]]
+        column = str(int(temp[1])-1)
         await nextMove(line, column)
     else:
 

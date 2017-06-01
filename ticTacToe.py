@@ -3,6 +3,7 @@ import random
 arr = [[' ', ' ', ' '],
        [' ', ' ', ' '],
        [' ', ' ', ' ']]
+gameInProcess = False
 
 def displayTable():
     '''Return a string wich display the table at the current state of the game.'''
@@ -14,13 +15,6 @@ def displayTable():
                 " C | {0} | {1} | {2} \n```".format(arr[2][0], arr[2][1], arr[2][2]))
     return table
 
-def pathTable():
-    '''Return the filename of the game_table.png.'''
-    #on créé une image avec "import Image" en bitmap. :-)
-
-    filename='dice.png'
-    return filename
-
 def displayWinner():
     '''Return a string with the final state of the game (win, lose, draw).'''
 
@@ -29,10 +23,15 @@ def displayWinner():
 def start():
     '''Start the game, init empty table.'''
 
-    return True
+    arr = [[' ', ' ', ' '],
+           [' ', ' ', ' '],
+           [' ', ' ', ' ']]
+    gameInProcess = True
+
 
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
+
 
     return True #is okey!
 
