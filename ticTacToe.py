@@ -31,6 +31,22 @@ def start():
 
     return True
 
+
+def winCondition():
+	'''Test if we have a winner'''
+	
+	for i in range(0, 2):
+		temp = arr[0][i] #ligne 1
+		if temp != ('X' || 'O'):
+			return false
+		for j in range(0,2):
+			tempj = arr[j][0] #colonne 1
+			if tempj != ('X' || 'O'):
+				return false
+			elif tempj == temp:
+				return True
+	
+	
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
 	if isSpaceFree(line, column):
