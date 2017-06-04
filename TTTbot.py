@@ -92,25 +92,38 @@ async def startGame():
 async def nextMove(line, column):
     """Send the next move to ticTacToe.py."""
 
-    global isPlaying
     if(t.nextMove(int(line), int(column))):
 
         await bot.say(t.displayTable())
-        result = t.winCondition()
-        if(result == "X"):
-
-            await bot.say("You win! :-)")
-            isPlaying = False
-        elif(result == "O"):
-
-            await bot.say("You lose! :-(")
-            isPlaying = False
-        elif(result == "-"):
-
-            await bot.say("Draw! No one wins!")
-            isPlaying = False
+        stopGame = await win()
+        if(not stopGame):
+            t.botPlay()
+            await bot.say(t.displayTable())
+            await win()
     else:
         await bot.say("Sorry, you can not do that!")
         await bot.say(t.displayTable())
+
+async def win():
+    """Check if we have a winner. Return True if game end."""
+
+    global isPlaying
+    result = t.winCondition()
+    if(result == "X"):
+
+        await bot.say("You win! :-)")
+        isPlaying = False
+        return True
+    elif(result == "O"):
+
+        await bot.say("You lose! :-(")
+        isPlaying = False
+        return True
+    elif(result == "-"):
+
+        await bot.say("Draw!")
+        isPlaying = False
+        return True
+    return False
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")

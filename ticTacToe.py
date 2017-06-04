@@ -1,4 +1,4 @@
-import random
+import random as r
 
 turnCounter = 0
 arr = [[' ', ' ', ' '],
@@ -25,6 +25,8 @@ def start():
     '''Start the game, init empty table.'''
 
     global arr
+    global turnCounter
+    turnCounter = 0
     arr = [[' ', ' ', ' '],
            [' ', ' ', ' '],
            [' ', ' ', ' ']]
@@ -33,6 +35,7 @@ def start():
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
 
+    global turnCounter
     if(arr[line][column] != "X" and arr[line][column] != "O"):
 
         arr[line][column] = "X"
@@ -42,43 +45,74 @@ def nextMove(line, column):
         return False
 
 def winCondition():
-    '''Return " " if no winner, return X or O if one wins.'''
+    '''Return "-" if no winner, " " if nothing happens (still playing) and return X or O if one wins.'''
 
+    global turnCounter
     #Line check
     for i in range(3):
+
         gameEnd = True
         temp = arr[i][0]
         if(temp != " "):
+
             for j in range(1,3):
+
                 if(arr[i][j] != temp):
+
                     gameEnd = False
                     break
             if(gameEnd):
-                return temp
 
+                return temp
     #column check
     for  i in range(3):
+
         gameEnd = True
         temp = arr[0][i]
         if(temp != " "):
+
             for j in range(1,3):
+
                 if(arr[j][i] != temp):
+
                     gameEnd = False
                     break
             if(gameEnd):
+
                 return temp
     #diagonals
     temp = arr[0][0]
     if(temp != " "):
+
         if(temp == arr[1][1] and temp == arr[2][2]):
+
             return temp
 
     temp = arr[0][2]
     if(temp != " "):
+
         if(temp == arr[1][1] and temp == arr[2][0]):
+
             return temp
-    #filled
-    if(turnCounter == 9):
+    #filled (draw)
+    if(turnCounter >= 9):
+
         return "-"
 
     return " "
+
+def botPlay():
+
+    global turnCounter
+    if(turnCounter < 9):
+
+        while(True):
+            line=r.randint(0,2)
+            column=r.randint(0,2)
+            if(arr[line][column] != "X" and arr[line][column] != "O"):
+
+                arr[line][column] = "O"
+                turnCounter+=1
+                return True
+    else:
+        return False
