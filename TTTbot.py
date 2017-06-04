@@ -65,9 +65,10 @@ async def play(*miniToe : str):
         isPlaying = True
     elif(len(temp)==2 and temp[0] in {"a","b","c"} and temp[1] in {"1","2","3"}):
 
+        dict = {'a': '0', 'b': '1', 'c': '2'}
         failedAttempt = 0
-        line = temp[0]
-        column = temp[1]
+        line = dict[temp[0]]
+        column = str(int(temp[1])-1)
         await nextMove(line, column)
     else:
 
@@ -90,11 +91,39 @@ async def startGame():
 
 async def nextMove(line, column):
     """Send the next move to ticTacToe.py."""
-    if(t.nextMove(line, column)):
 
-        await bot.say("You played "+ line + column +".")
+    if(t.nextMove(int(line), int(column))):
+
         await bot.say(t.displayTable())
+        stopGame = await win()
+        if(not stopGame):
+            t.botPlay()
+            await bot.say(t.displayTable())
+            await win()
     else:
         await bot.say("Sorry, you can not do that!")
+        await bot.say(t.displayTable())
+
+async def win():
+    """Check if we have a winner. Return True if game end."""
+
+    global isPlaying
+    result = t.winCondition()
+    if(result == "X"):
+
+        await bot.say("You win! :-)")
+        isPlaying = False
+        return True
+    elif(result == "O"):
+
+        await bot.say("You lose! :-(")
+        isPlaying = False
+        return True
+    elif(result == "-"):
+
+        await bot.say("Draw!")
+        isPlaying = False
+        return True
+    return False
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")

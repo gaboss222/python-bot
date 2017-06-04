@@ -1,8 +1,10 @@
-import random
+import random as r
 
+turnCounter = 0
 arr = [[' ', ' ', ' '],
        [' ', ' ', ' '],
        [' ', ' ', ' ']]
+gameInProcess = False
 
 def displayTable():
     '''Return a string wich display the table at the current state of the game.'''
@@ -14,13 +16,6 @@ def displayTable():
                 " C | {0} | {1} | {2} \n```".format(arr[2][0], arr[2][1], arr[2][2]))
     return table
 
-def pathTable():
-    '''Return the filename of the game_table.png.'''
-    #on créé une image avec "import Image" en bitmap. :-)
-
-    filename='dice.png'
-    return filename
-
 def displayWinner():
     '''Return a string with the final state of the game (win, lose, draw).'''
 
@@ -29,38 +24,96 @@ def displayWinner():
 def start():
     '''Start the game, init empty table.'''
 
-    return True
+    global arr
+    global turnCounter
+    turnCounter = 0
+    arr = [[' ', ' ', ' '],
+           [' ', ' ', ' '],
+           [' ', ' ', ' ']]
 
 
-def winCondition():
-	'''Test if we have a winner'''
-	
-	for i in range(0, 2):
-		temp = arr[0][i] #ligne 1
-		if temp != ('X' || 'O'):
-			return false
-		for j in range(0,2):
-			tempj = arr[j][0] #colonne 1
-			if tempj != ('X' || 'O'):
-				return false
-			elif tempj == temp:
-				return True
-	
-	
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
-	if isSpaceFree(line, column):
-		arr[[line][column]] = 'X'
-		return True
-     #is okey!
 
-def isSpaceFree(line, column):
-	if(arr[[line][column]]):
-		return True
-	else
-		return False
-	
-def isGameInProgress():
-    '''Return true if game in process. Game end when one win or if we have a draw.'''
+    global turnCounter
+    if(arr[line][column] != "X" and arr[line][column] != "O"):
 
-    return True
+        arr[line][column] = "X"
+        turnCounter+=1
+        return True
+    else:
+        return False
+
+def winCondition():
+    '''Return "-" if no winner, " " if nothing happens (still playing) and return X or O if one wins.'''
+
+    global turnCounter
+    #Line check
+    for i in range(3):
+
+        gameEnd = True
+        temp = arr[i][0]
+        if(temp != " "):
+
+            for j in range(1,3):
+
+                if(arr[i][j] != temp):
+
+                    gameEnd = False
+                    break
+            if(gameEnd):
+
+                return temp
+    #column check
+    for  i in range(3):
+
+        gameEnd = True
+        temp = arr[0][i]
+        if(temp != " "):
+
+            for j in range(1,3):
+
+                if(arr[j][i] != temp):
+
+                    gameEnd = False
+                    break
+            if(gameEnd):
+
+                return temp
+    #diagonals
+    temp = arr[0][0]
+    if(temp != " "):
+
+        if(temp == arr[1][1] and temp == arr[2][2]):
+
+            return temp
+
+    temp = arr[0][2]
+    if(temp != " "):
+
+        if(temp == arr[1][1] and temp == arr[2][0]):
+
+            return temp
+    #filled (draw)
+    if(turnCounter >= 9):
+
+        return "-"
+
+    return " "
+
+def botPlay():
+	'''Place bot's letter in a case (by a random number).'''
+
+    global turnCounter
+    if(turnCounter < 9):
+
+        while(True):
+            line=r.randint(0,2)
+            column=r.randint(0,2)
+            if(arr[line][column] != "X" and arr[line][column] != "O"):
+
+                arr[line][column] = "O"
+                turnCounter+=1
+                return True
+    else:
+        return False
