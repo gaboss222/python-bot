@@ -1,5 +1,6 @@
 import random
 
+turnCounter = 0
 arr = [[' ', ' ', ' '],
        [' ', ' ', ' '],
        [' ', ' ', ' ']]
@@ -35,6 +36,7 @@ def nextMove(line, column):
     if(arr[line][column] != "X" and arr[line][column] != "O"):
 
         arr[line][column] = "X"
+        turnCounter+=1
         return True
     else:
         return False
@@ -75,5 +77,8 @@ def winCondition():
     if(temp != " "):
         if(temp == arr[1][1] and temp == arr[2][0]):
             return temp
+    #filled
+    if(turnCounter == 9):
+        return "-"
 
     return " "
