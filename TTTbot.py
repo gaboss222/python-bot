@@ -16,6 +16,9 @@ isPlaying = False #set to default False
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
+#channel = bot.get_channel(id='314664198971850752')
+#channel = bot.get_channel(id='309734242085109760')
+channel = bot.get_channel(id='266558346969088002')
 
 @bot.command()
 async def add(left : int, right : int):
@@ -39,15 +42,14 @@ async def _bot():
     """Is the bot cool?"""
     await bot.say('Yes, the bot is cool.')
 
-    channel = bot.get_channel(id='314664198971850752')
     await bot.send_file(destination=channel, fp='./assets/dice.png', filename='dice.png')
 
 @bot.command()
-async def enought():
-    """When you had enought."""
+async def enough():
+    """When you had enough."""
 
     await bot.say('https://i.ytimg.com/vi/Yx0qSdfvF7Y/maxresdefault.jpg')
-    await bot.say('When you had enought! :-(')
+    await bot.say('When you had enough! :-(')
 
 @bot.command(description='For when you are bored, the bot will play with you.')
 async def play(*miniToe : str):
