@@ -1,4 +1,6 @@
 # Tic Tac Toe
+# Taked from https://inventwithpython.com/chapter10.html
+# Used for firsts tests with bot.
 
 import random
 
