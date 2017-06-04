@@ -23,19 +23,57 @@ def displayWinner():
 def start():
     '''Start the game, init empty table.'''
 
+    global arr
     arr = [[' ', ' ', ' '],
            [' ', ' ', ' '],
            [' ', ' ', ' ']]
-    gameInProcess = True
 
 
 def nextMove(line, column):
     '''Update the table, if it can not (case already used) it returns false, else true.'''
 
+    if(arr[line][column] != "X" and arr[line][column] != "O"):
 
-    return True #is okey!
+        arr[line][column] = "X"
+        return True
+    else:
+        return False
 
-def isGameInProgress():
-    '''Return true if game in process. Game end when one win or if we have a draw.'''
+def winCondition():
+    '''Return " " if no winner, return X or O if one wins.'''
 
-    return True
+    #Line check
+    for i in range(3):
+        gameEnd = True
+        temp = arr[i][0]
+        if(temp != " "):
+            for j in range(1,3):
+                if(arr[i][j] != temp):
+                    gameEnd = False
+                    break
+            if(gameEnd):
+                return temp
+
+    #column check
+    for  i in range(3):
+        gameEnd = True
+        temp = arr[0][i]
+        if(temp != " "):
+            for j in range(1,3):
+                if(arr[j][i] != temp):
+                    gameEnd = False
+                    break
+            if(gameEnd):
+                return temp
+    #diagonals
+    temp = arr[0][0]
+    if(temp != " "):
+        if(temp == arr[1][1] and temp == arr[2][2]):
+            return temp
+
+    temp = arr[0][2]
+    if(temp != " "):
+        if(temp == arr[1][1] and temp == arr[2][0]):
+            return temp
+
+    return " "
