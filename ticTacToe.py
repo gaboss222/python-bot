@@ -102,6 +102,7 @@ def winCondition():
     return " "
 
 def botPlay():
+	'''Place bot's letter in a case (by a random number).'''
 
     global turnCounter
     if(turnCounter < 9):
