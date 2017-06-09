@@ -12,6 +12,7 @@ description = """Python bot project by Florian Fasmeyer & Gabriel Mc.Gaben."""
 bot = commands.Bot(command_prefix='!', description=description)
 failedAttempt = 0
 isPlaying = False #set to default False
+board = t.draw()
 
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
@@ -28,22 +29,53 @@ async def play(*miniToe : str):
     player1 = 'X'
     player2 = 'O'
 
-    move = miniToe
-
-    if isPlaying == False:
-
+    if len(miniToe)>0:
+        move = miniToe
+    else:
         await startGame()
 
+    if isPlaying == False:   
         isPlaying = not isPlaying
-    while not winner :
+        
+    if playPlayer1:
+
+        await bot.say('Joueur 1 : ')
+    else:
+
+        await bot.say('Joueur 2 : ')
+        
+    if isValid(move):
         if playPlayer1:
-
-            await bot.say('Joueur 1 : ')
+            movePlayer(player1, move)
+            if t.hasWon(player1):
+                await bot.say("Joueur 1 gagne")
+                winner = True
         else:
+            movePlayer(player1, move)
+            if t.hasWon(player2):
+                await bot.say("Joueur 2 gagne")
+                winner = True
+      
+    if winner:
+        await bot.say("GAGNANT")
+        
+    playPlayer1 = not playPlayer1
+   
 
-            await bot.say('Joueur 2 : ')
-
-            
+async def movePlayer(player, move):
+    """Place move on the board"""
+    board[move] = player
+    pass
+   
+async def isValid(move):
+    """Move valid"""
+    
+    if move >= 1 and move <= 9 and t.isSpaceFree(move):
+        return True
+    else:      
+        await bot.say("Move incorrect")
+        return False
+        
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
