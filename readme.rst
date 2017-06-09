@@ -22,7 +22,7 @@ Le code est absolument ignoble mais il fonctionne. Il est temps d'apprendre le z
 de python!
 
 Une version avec AI pourrait-être implémenter  pourrait être imaginée
-(un peu trop nul pour le faire..)
+(un peu trop nul pour le faire.)
 
 L'AI calculerait, à chaque coup (dans la méthode botPlay()).
 Il prendrait une copy du board, puis testerais chaque case.
