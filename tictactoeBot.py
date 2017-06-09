@@ -17,7 +17,7 @@ log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
-@bot.command(description='For when you are bored, the bot will play with you.')
+@bot.command(description='Play a game of TicTacToe with the bot.')
 async def play(*miniToe : str):
     """Play a game of TicTacToe with the bot."""
 
@@ -43,21 +43,7 @@ async def play(*miniToe : str):
 
     		await bot.say('Joueur 2 : ')
 
-    		try:
-    			if move >= 1 and move <= 9 and t.isSpaceFree(move):
-    				if playPlayer1:
-    					t.movePlayer(player1, move)
-    					if t.win_condition(player1):
-    						await bot.say('Joueur 1 a gagné !')
-    						winner = True
-    				else:
-    					t.movePlayer(player2, move)
-    					if t.win_condition(player2):
-    						await bot.say('Joueur 2 a gagné !')
-    						winner = True
-    			else:
-    				await bot.say('Entrez une position correcte')
-
+    		
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
