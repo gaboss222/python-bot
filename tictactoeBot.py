@@ -65,5 +65,4 @@ async def startGame():
     t.draw()
     await bot.say("Let's play!")
 
-
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
