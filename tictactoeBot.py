@@ -32,23 +32,23 @@ async def play(*miniToe : str):
 
     if isPlaying == False:
 
-    	await startGame()
+        await startGame()
 
-    	isPlaying = not isPlaying
+        isPlaying = not isPlaying
     while not winner :
-    	if playPlayer1:
+        if playPlayer1:
 
-    		await bot.say('Joueur 1 : ')
-    	else:
+            await bot.say('Joueur 1 : ')
+        else:
 
-    		await bot.say('Joueur 2 : ')
+            await bot.say('Joueur 2 : ')
 
-    		
+            
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
 
-    t.draw()
     await bot.say("Let's play!")
+    await bot.say(t.draw())
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
