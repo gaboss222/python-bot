@@ -17,6 +17,14 @@ log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
+@bot.command(name='bot')
+async def _bot():
+    """Is the bot cool?"""
+    await bot.say('Yes, the bot is cool.')
+
+    await bot.send_file(destination=channel, fp='./assets/croix.png', filename='croix.png')
+    await bot.send_file(destination=channel, fp='./assets/rond.jpg', filename='rond.jpg')
+
 @bot.command(description='Play a game of TicTacToe with the bot.')
 async def play(*miniToe : str):
     """Play a game of TicTacToe with the bot."""
@@ -43,7 +51,7 @@ async def play(*miniToe : str):
 
     		await bot.say('Joueur 2 : ')
 
-    		
+
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
