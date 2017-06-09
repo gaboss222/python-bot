@@ -20,10 +20,8 @@ log.addHandler(logging.StreamHandler())
 @bot.command(name='bot')
 async def _bot():
     """Is the bot cool?"""
-    await bot.say('Yes, the bot is cool.')
 
-    await bot.send_file(destination=channel, fp='./assets/croix.png', filename='croix.png')
-    await bot.send_file(destination=channel, fp='./assets/rond.jpg', filename='rond.jpg')
+    await bot.say('Yes, the bot is cool.')
 
 @bot.command(description='Play a game of TicTacToe with the bot.')
 async def play(*miniToe : str):
