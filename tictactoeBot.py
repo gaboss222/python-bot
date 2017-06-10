@@ -18,6 +18,12 @@ log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
+@bot.command(name='bot')
+async def _bot():
+    """Is the bot cool?"""
+
+    await bot.say('Yes, the bot is cool.')
+
 @bot.command(description='Play a game of TicTacToe with the bot.')
 async def play(*miniToe : str):
     """Play a game of TicTacToe with the bot."""
@@ -29,6 +35,7 @@ async def play(*miniToe : str):
     player1 = 'X'
     player2 = 'O'
 
+<<<<<<< HEAD
     if len(miniToe)>0:
         move = miniToe
     else:
@@ -76,6 +83,24 @@ async def isValid(move):
         await bot.say("Move incorrect")
         return False
         
+=======
+    move = miniToe
+
+    if isPlaying == False:
+
+    	await startGame()
+
+    	isPlaying = not isPlaying
+    while not winner :
+    	if playPlayer1:
+
+    		await bot.say('Joueur 1 : ')
+    	else:
+
+    		await bot.say('Joueur 2 : ')
+
+
+>>>>>>> 622aae8ad856c66838fe3a9f181a89724de874d1
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
