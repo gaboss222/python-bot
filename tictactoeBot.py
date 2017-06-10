@@ -35,7 +35,6 @@ async def play(*miniToe : str):
     player1 = 'X'
     player2 = 'O'
 
-<<<<<<< HEAD
     if len(miniToe)>0:
         move = miniToe
     else:
@@ -82,8 +81,6 @@ async def isValid(move):
     else:      
         await bot.say("Move incorrect")
         return False
-        
-=======
     move = miniToe
 
     if isPlaying == False:
@@ -99,8 +96,6 @@ async def isValid(move):
 
     		await bot.say('Joueur 2 : ')
 
-
->>>>>>> 622aae8ad856c66838fe3a9f181a89724de874d1
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
