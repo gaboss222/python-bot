@@ -1,8 +1,6 @@
 
 board = [' '] * 10
 
-winner = False
-playPlayer1 = True
 
 def draw() :
     print('   |   |')
@@ -48,6 +46,10 @@ def win_condition(player):
             return True
 
 def main():
+
+    
+    winner = False
+    playPlayer1 = True
     while not winner :
         draw()
 
