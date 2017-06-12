@@ -12,37 +12,13 @@ bot = commands.Bot(command_prefix='!', description=description)
 failedAttempt = 0
 board = [':white_medium_square:'] * 10
 playPlayer1 = True
-name = ''
-id = ''
+
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
-client = discord.Client()
 
-@client.event
-async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
-
-@client.event
-async def on_message(message):
-    if message.content.startswith('!test'):
-        counter = 0
-        tmp = await client.send_message(message.channel, 'Calculating messages...')
-        async for log in client.logs_from(message.channel, limit=100):
-            if log.author == message.author:
-                counter += 1
-
-        await client.edit_message(tmp, 'You have {} messages.'.format(counter))
-    elif message.content.startswith('!sleep'):
-        await asyncio.sleep(5)
-        await client.send_message(message.channel, 'Done sleeping')
-
-            
-@bot.command(name='aide')
-async def aide():
+@bot.command(name='bot')
+async def _bot():
     """Is the bot cool?"""
 
     await bot.say('Yes, the bot is cool.')
@@ -50,8 +26,6 @@ async def aide():
 @bot.command(description='Play a game of TicTacToe with the bot.')
 async def play(*miniToe : int):
     """Play a game of TicTacToe with the bot."""
-    
-    
     isPlaying = False
     winner = False
     player1 = ':x:'
@@ -90,7 +64,8 @@ async def play(*miniToe : int):
     
     if winner:
         isPlaying = False
-        await bot.say("GAGNANT")           
+        await bot.say("GAGNANT")
+        board = [':white_medium_square:'] * 10       
    
  
 
@@ -142,5 +117,4 @@ async def startGame():
     await bot.say("Let's play!")
    
 
-client.run('MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ')
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
