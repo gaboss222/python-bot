@@ -10,11 +10,10 @@ import logging
 description = """Python bot project by Florian Fasmeyer & Gabriel Mc.Gaben."""
 bot = commands.Bot(command_prefix='!', description=description)
 failedAttempt = 0
-board = [':white_medium_square:'] * 10
 playPlayer1 = True
-
 log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
+board = 0
 #logging.basicConfig(level=logging.INFO)
 
 @bot.command(name='bot')
@@ -30,42 +29,43 @@ async def play(*miniToe : int):
     winner = False
     player1 = ':x:'
     player2 = ':o:'
-    playPlayer1 = True
+    global playPlayer1
     
-    if len(miniToe)==0 and not isPlaying:
+    if len(miniToe)==0 and isPlaying is False:
         await startGame()
         isPlaying = True
-    
-    if isPlaying:
-        if playPlayer1:
-            await bot.say('Joueur 1 : ')
-        else:
-            await bot.say('Joueur 2: ')
-            
-    
+        playPlayer1 = True
+        await bot.say('Joueur 1 : ')
+               
         
     elif len(miniToe)>0:          
-            move = miniToe[0]         
-           
+            move = miniToe[0]                    
                 
             if playPlayer1:
-                await movePlayer(player1, move)
-                if await hasWon(player1):
-                    await bot.say("Joueur 1 gagne")
-                    winner = True
-            elif playPlayer2:
-                await movePlayer(player2, move)
-                if await hasWon(player2):
-                    await bot.say("Joueur 2 gagne")
-                    winner = True
-                    
-            
-    playPlayer1 = not playPlayer1
-    
+                if await movePlayer(player1, move):                
+                    if await hasWon(player1):
+                        await bot.say("Joueur 1 gagne")
+                        winner = True
+                    else: 
+                        playPlayer1 = False
+                        await bot.say('Joueur 2 :')
+                else:
+                    playPlayer1 = True
+            else:
+                if await movePlayer(player2, move):
+                    if await hasWon(player2):
+                        await bot.say("Joueur 2 gagne")
+                        winner = True
+                    else:
+                        playPlayer1 = True
+                        await bot.say('Joueur 1 :')
+                else:
+                    playPlayer1 = False
+     
     if winner:
         isPlaying = False
         await bot.say("GAGNANT")
-        board = [':white_medium_square:'] * 10       
+        
    
  
 
@@ -75,14 +75,26 @@ async def movePlayer(player, move):
     if move >= 1 and move <= 9 and (await isSpaceFree(move) == True):
         board[move] = player
         await draw()
+        return True
         
     else:
         await bot.say('Entrez une position correcte (1-9)')
+        return False
 
 
 async def hasWon(player):
         '''Def the win condition'''
 
+        
+        #any(all(x == player for x in board[i::3])
+        #    for i in range(3))
+            
+        #any(all(x == player for x in board[i:i+3])
+        #    for i in range(0, 9, 3))
+            
+        #any(all(x == player for x in board[s])
+        #    for s in (slice(0,9,4), slice(2,7,2))
+         
         for i in range(1,4):
             #vérification des colonnes
             if(board[i] == board[(i+3)] and board[i] == board[(i+6)] == player):
@@ -98,8 +110,14 @@ async def hasWon(player):
         if(board[1] == board[5] == player and board[5] == board[9] or
            board[3] == board[5] == player and board[5] == board[7]):
             return True
- 
 
+        
+async def initBoard():
+    """Initialize the board"""
+    
+    global board
+    board = [':white_medium_square:'] * 10
+ 
 async def isSpaceFree(position):
     """Is the place is free ?"""
 
@@ -108,12 +126,22 @@ async def isSpaceFree(position):
   
 async def draw():
     """Draw the board"""
+    
+    #result = None
+    #for i in range(1, 10):
+    #    if i%3:
+    #        await bot.say(board[i] + '\n')
+    #    else:
+    #        result += board[i]
+            
+    #await bot.say(result)
     await bot.say(board[1] + board[2] +board[3] + '\n' + board[4] + board[5] + board[6] + '\n' + board[7] +board[8] +board[9])
  
 async def startGame():
     """Start the game, randomly choose who will be first."""
-
-    await draw()
+    
+    await initBoard()
+    await draw()   
     await bot.say("Let's play!")
    
 
