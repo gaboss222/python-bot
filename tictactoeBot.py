@@ -18,7 +18,7 @@ board = 0
 playerName = ""
 #logging.basicConfig(level=logging.INFO)
 
-   
+
 
 @bot.command(description='Decide who to play')
 async def playWith():
@@ -32,8 +32,8 @@ async def playWith():
         await bot.say('Joueur 1 : ')
     else:
         await bot.say('Une partie est en cours')
-    
-@bot.command(description='Play a game of tictactoe')   
+
+@bot.command(description='Play a game of tictactoe')
 async def move(*miniToe : int):
     """Play a game of TicTacToe with the bot."""
     global isPlaying
@@ -41,17 +41,17 @@ async def move(*miniToe : int):
     player1 = ':x:'
     player2 = ':o:'
     global playPlayer1
-    
+
     if isPlaying:
-        if len(miniToe)>0:          
-                move = miniToe[0]                    
-                    
+        if len(miniToe)>0:
+                move = miniToe[0]
+
                 if playPlayer1:
-                    if await movePlayer(player1, move):                
+                    if await movePlayer(player1, move):
                         if await hasWon(player1):
                             await bot.say("Joueur 1 gagne")
                             winner = True
-                        else: 
+                        else:
                             playPlayer1 = False
                             await bot.say('Joueur 2 :')
                     else:
@@ -69,9 +69,9 @@ async def move(*miniToe : int):
     else:
         await bot.say("Aucune partie en cours")
     if winner:
-        isPlaying = False       
-   
- 
+        isPlaying = False
+
+
 
 async def movePlayer(player, move):
     """Place move on the board"""
@@ -80,7 +80,7 @@ async def movePlayer(player, move):
         board[move] = player
         await draw()
         return True
-        
+
     else:
         await bot.say('Entrez une position correcte (1-9)')
         return False
@@ -89,16 +89,16 @@ async def movePlayer(player, move):
 async def hasWon(player):
         '''Def the win condition'''
 
-        
+
         #any(all(x == player for x in board[i::3])
         #    for i in range(3))
-            
+
         #any(all(x == player for x in board[i:i+3])
         #    for i in range(0, 9, 3))
-            
+
         #any(all(x == player for x in board[s])
         #    for s in (slice(0,9,4), slice(2,7,2))
-         
+
         for i in range(1,4):
             #vérification des colonnes
             if(board[i] == board[(i+3)] and board[i] == board[(i+6)] == player):
@@ -115,38 +115,38 @@ async def hasWon(player):
            board[3] == board[5] == player and board[5] == board[7]):
             return True
 
-        
+
 async def initBoard():
     """Initialize the board"""
-    
+
     global board
     board = [':white_medium_square:'] * 10
- 
+
 async def isSpaceFree(position):
     """Is the place is free ?"""
 
     return board[position] == ':white_medium_square:'
-  
-  
+
+
 async def draw():
     """Draw the board"""
-    
-    result = ''
+
+    result = '\n'
     for i in range(1, 10):
         if i%3 == 0:
             result +=  board[i] + '\n'
         else:
             result += board[i]
-            
+
     await bot.say('\n' + result)
     #await bot.say('\n' + board[1] + board[2] +board[3] + '\n' + board[4] + board[5] + board[6] + '\n' + board[7] +board[8] +board[9])
- 
+
 async def startGame():
     """Start the game, randomly choose who will be first."""
-    
+
     await initBoard()
-    await draw()   
+    await draw()
     await bot.say("Let's play!")
-   
+
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
