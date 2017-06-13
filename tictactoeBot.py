@@ -39,7 +39,7 @@ async def playWithPlayer():
     global bot
     global player1Name
     global playPlayer1
-    if isPlaying is False : #and len(name)==0:
+    if not isPlaying : #and len(name)==0:
         await startGame()
         isPlaying = True
         playPlayer1 = True
@@ -56,7 +56,7 @@ async def playWithPC():
     global isPlaying
     global playPlayer1
     global playVSPC
-    if isPlaying is False :
+    if not isPlaying :
         await startGame()
         isPlaying = True
         playPlayer1 = True
@@ -90,25 +90,25 @@ async def move(*miniToe : int):
                     if len(miniToe)>0 and await isValid(miniToe[0]):
                             move = miniToe[0]
                             if playPlayer1:
-                                if await movePlayer(board, player1, move):
+                                if movePlayer(board, player1, move):
                                     await draw()
-                                    if await hasWon(board, player1):
+                                    if hasWon(board, player1):
                                         await bot.say("Joueur 1 gagne")
                                         winner = True
                                     else:
-                                        if await isBoardFull(board):
+                                        if isBoardFull(board):
                                             boardFull = True
                                         else:
                                             playPlayer1 = False
                                             await bot.say('Joueur 2 :')
                             else:
-                                if await movePlayer(board, player2, move):
+                                if movePlayer(board, player2, move):
                                     await draw()
-                                    if await hasWon(board, player2):
+                                    if hasWon(board, player2):
                                         await bot.say("Joueur 2 gagne")
                                         winner = True
                                     else:
-                                        if await isBoardFull(board):
+                                        if isBoardFull(board):
                                             boardFull = True
                                         else:
                                             playPlayer1 = True
@@ -118,23 +118,23 @@ async def move(*miniToe : int):
             else:
                 if len(miniToe)>0:
                             move = miniToe[0]
-                            if await movePlayer(board, player1, move):
+                            if movePlayer(board, player1, move):
                                 await draw()
-                                if await hasWon(board, player1):
+                                if hasWon(board, player1):
                                     await bot.say("Joueur 1 gagne")
                                     winner = True
                                 else:
-                                    if await isBoardFull(board):
+                                    if isBoardFull(board):
                                         boardFull = True
                                     else:
                                         await bot.say('Au PC :')
                                         moveBot = await getMoveBot()
-                                        if await movePlayer(board, player2, moveBot):
+                                        if movePlayer(board, player2, moveBot):
                                             await draw()
-                                            if await hasWon(board, player2):
+                                            if hasWon(board, player2):
                                                 await bot.say("PC Gagne")
                                                 winner = True
-                                            elif await isBoardFull(board):
+                                            elif isBoardFull(board):
                                                 boardFull = True
                 else:
                     await bot.say('Entrez un nombre de 1 à 9.')
@@ -146,9 +146,9 @@ async def move(*miniToe : int):
         isPlaying = False
         playVSPC = False
 
-
-async def isValid(move):
+def isValid(move):
     """Return true if input within [1;9]."""
+
     if move >= 1 and move <= 9:
         return True
     else:
@@ -164,37 +164,41 @@ async def getMoveBot():
     #Sinon, centre, puis corners, puis random
     #IA reprise du site https://inventwithpython.com/chapter10.html (modifiée en fonction de mon code)
     for i in range(1,10):
-        boardCopy = await getBoardCopy(board)
-        if await isSpaceFree(boardCopy, i):
-            if await movePlayer(boardCopy, player2, i):
-                if await hasWon(boardCopy, player2):
+        boardCopy = getBoardCopy(board)
+        if isSpaceFree(boardCopy, i):
+            if movePlayer(boardCopy, player2, i):
+                if hasWon(boardCopy, player2):
                     return i
     for i in range(1, 10):
-        boardCopy = await getBoardCopy(board)
-        if await isSpaceFree(boardCopy, i):
-            if await movePlayer(boardCopy, player1, i):
-                if await hasWon(boardCopy, player1):
+        boardCopy = getBoardCopy(board)
+        if isSpaceFree(boardCopy, i):
+            if movePlayer(boardCopy, player1, i):
+                if hasWon(boardCopy, player1):
                     return i
 
     #Centre
-    if await isSpaceFree(board, 5):
+    if isSpaceFree(board, 5):
         return 5
     #Corners
     for i in range(1,3, 2):
-        if await isSpaceFree(board, i):
+        if isSpaceFree(board, i):
             return i
     for i in range(7,9,2):
-        if await isSpaceFree(board, i):
+
+        if isSpaceFree(board, i):
             return i
+
     #Sinon, nombre random
     i = random.randint(1, 10)
-    while not await isSpaceFree(boardCopy, i):
+    while not isSpaceFree(boardCopy, i):
         i = i + 1
+
     return i
 
 
 
-async def getBoardCopy(b):
+def getBoardCopy(b):
+
      # Make a duplicate of the board list and return it the duplicate.
      boardCopy = []
 
@@ -203,11 +207,10 @@ async def getBoardCopy(b):
 
      return boardCopy
 
+def movePlayer(b, player, move):
+    """Place move on the board."""
 
-async def movePlayer(b, player, move):
-    """Place move on the board.""" #Much wow!
-
-    if await isValid(move) and (await isSpaceFree(b, move)):
+    if isValid(move) and (isSpaceFree(b, move)):
         b[move] = player
         return True
 
@@ -216,7 +219,7 @@ async def movePlayer(b, player, move):
         return False
 
 
-async def hasWon(board, player):
+def hasWon(board, player):
         '''Def the win condition'''
 
 
@@ -247,22 +250,20 @@ async def hasWon(board, player):
 
 
 
-async def initBoard():
+def initBoard():
     """Initialize the board"""
 
     global board
     board = [':white_medium_square:'] * 10
 
-
-async def isBoardFull(b):
-        """Return true if the board is full"""
+def isBoardFull(b):
+        """Return true if the board is full."""
         for i in range(1, 10):
-            if await isSpaceFree(b, i):
-                return False
-        return True
+            return ':white_medium_square:' in b
+        return False
 
-async def isSpaceFree(b, position):
-    """Is the place is free ?"""
+def isSpaceFree(b, position):
+    """Return true if the place you want to place your pawn on is free."""
 
     return b[position] == ':white_medium_square:'
 
@@ -282,7 +283,7 @@ async def draw():
 async def startGame():
     """Start the game, randomly choose who will be first."""
 
-    await initBoard()
+    initBoard()
     await draw()
     await bot.say("Let's play!")
 
