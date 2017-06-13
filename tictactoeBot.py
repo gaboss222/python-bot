@@ -25,43 +25,40 @@ log.setLevel(logging.DEBUG)
 log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
-@bot.command(pass_context=True)
-async def myName is(ctx, member: discord.Member = None):
-    if member is None:
-        member = ctx.message.author
-
-    await bot.say('Your name is {0}'.format(member.name))
-
-@bot.command(description='Play TicTacToe against another player.')
-async def playWithPlayer():
+@bot.command(description='Play TicTacToe against another player (default).', pass_context=True)
+async def play(ctx):
     """Play TicTacToe against another player."""
+
     global isPlaying
     global bot
     global player1Name
     global playPlayer1
+
     if not isPlaying : #and len(name)==0:
         await startGame()
         isPlaying = True
         playPlayer1 = True
-        player1Name = 'haha'
-
-        await bot.say()
-        await bot.say(player1Name)
+        player1Name = ctx.message.author.name
+        await bot.say('À '+player1Name+' de jouer.')
     else:
         await bot.say('Une partie est en cours.')
 
-@bot.command(description='Play TicTacToe against the PC.')
-async def playWithPC():
+@bot.command(description='Play TicTacToe against the PC.',  pass_context=True)
+async def playSolo(ctx):
     """Play TicTacToe against the PC."""
+
     global isPlaying
     global playPlayer1
+    global player1Name
     global playVSPC
     if not isPlaying :
         await startGame()
         isPlaying = True
         playPlayer1 = True
+        player2Name = ''
+        player1Name = ctx.message.author.name
         playVSPC = True
-        await bot.say('Joueur 1 : ')
+        await bot.say('À '+player1Name+' de jouer.')
     else:
         await bot.say('Une partie est en cours.')
 
@@ -72,8 +69,8 @@ async def stop():
     isPlaying = False
     await bot.say('Fin de la partie.')
 
-@bot.command(description='Make a move on the TicTacToe board (after starting a game).')
-async def move(*miniToe : int):
+@bot.command(pass_context=True, description='Make a move on the TicTacToe board (after starting a game).')
+async def move(ctx, *miniToe : int):
     """Make a move on the TicTacToe board (after starting a game)."""
 
     global isPlaying
@@ -81,38 +78,48 @@ async def move(*miniToe : int):
     global player1
     global player2
     global playPlayer1
+    global player1Name
+    global player2Name
     global playVSPC
     boardFull = False
 
     if isPlaying:
         if not winner:
             if not playVSPC:
-                    if len(miniToe)>0 and await isValid(miniToe[0]):
+                    if len(miniToe)>0 and isValid(miniToe[0]):
                             move = miniToe[0]
+
                             if playPlayer1:
-                                if movePlayer(board, player1, move):
-                                    await draw()
-                                    if hasWon(board, player1):
-                                        await bot.say("Joueur 1 gagne")
-                                        winner = True
-                                    else:
-                                        if isBoardFull(board):
-                                            boardFull = True
+                                if player1Name == ctx.message.author.name :
+                                    if movePlayer(board, player1, move):
+                                        await draw()
+                                        if hasWon(board, player1):
+                                            await bot.say(player1Name+' a gagné!')
+                                            winner = True
                                         else:
-                                            playPlayer1 = False
-                                            await bot.say('Joueur 2 :')
+                                            if isBoardFull(board):
+                                                boardFull = True
+                                            else:
+                                                playPlayer1 = False
+                                                if player2Name != '' :
+                                                    await bot.say('À '+player2Name+' de jouer.')
+                                                else:
+                                                    await bot.say('Au tour du deuxième joueur.')
                             else:
-                                if movePlayer(board, player2, move):
-                                    await draw()
-                                    if hasWon(board, player2):
-                                        await bot.say("Joueur 2 gagne")
-                                        winner = True
-                                    else:
-                                        if isBoardFull(board):
-                                            boardFull = True
+                                if player2Name == '' :
+                                    player2Name = ctx.message.author.name
+                                if player2Name == ctx.message.author.name :
+                                    if movePlayer(board, player2, move):
+                                        await draw()
+                                        if hasWon(board, player2):
+                                            await bot.say(player2Name+' a gagné!')
+                                            winner = True
                                         else:
-                                            playPlayer1 = True
-                                            await bot.say('Joueur 1 :')
+                                            if isBoardFull(board):
+                                                boardFull = True
+                                            else:
+                                                playPlayer1 = True
+                                                await bot.say('À '+player1Name+' de jouer.')
                     else:
                         await bot.say('Entrez un nombre de 1 à 9.')
             else:
@@ -121,18 +128,18 @@ async def move(*miniToe : int):
                             if movePlayer(board, player1, move):
                                 await draw()
                                 if hasWon(board, player1):
-                                    await bot.say("Joueur 1 gagne")
+                                    await bot.say(player1Name+' a gagné!')
                                     winner = True
                                 else:
                                     if isBoardFull(board):
                                         boardFull = True
                                     else:
-                                        await bot.say('Au PC :')
+                                        await bot.say('À PC de jouer.')
                                         moveBot = await getMoveBot()
                                         if movePlayer(board, player2, moveBot):
                                             await draw()
                                             if hasWon(board, player2):
-                                                await bot.say("PC Gagne")
+                                                await bot.say("PC a gagné!")
                                                 winner = True
                                             elif isBoardFull(board):
                                                 boardFull = True
@@ -142,7 +149,6 @@ async def move(*miniToe : int):
         await bot.say("Aucune partie en cours.")
 
     if winner or boardFull:
-        await bot.say('Fin de la partie.')
         isPlaying = False
         playVSPC = False
 
@@ -215,7 +221,6 @@ def movePlayer(b, player, move):
         return True
 
     else:
-        await bot.say('Position déjà prise, essayez-en une autre.')
         return False
 
 
@@ -259,8 +264,9 @@ def initBoard():
 def isBoardFull(b):
         """Return true if the board is full."""
         for i in range(1, 10):
-            return ':white_medium_square:' in b
-        return False
+            if b[i] == ':white_medium_square:':
+                return False
+        return True
 
 def isSpaceFree(b, position):
     """Return true if the place you want to place your pawn on is free."""
@@ -285,7 +291,5 @@ async def startGame():
 
     initBoard()
     await draw()
-    await bot.say("Let's play!")
-
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
