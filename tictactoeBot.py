@@ -19,7 +19,7 @@ player1 = ':x:'
 player2 = ':o:'
 #logging.basicConfig(level=logging.INFO)
 
-   
+
 
 @bot.command(description='Decide who to play')
 async def playWithPlayer():
@@ -49,55 +49,13 @@ async def playWithPC():
     else:
         await bot.say('Une partie est en cours')
  
-async def getMoveBot():
-    """Move from the bot"""
-    global player2
-    #On test le moove du bot sur une copy du board
-    #Si le moove fait du bot un gagnant, retourne ce moove (i)
-    #Sinon, test si le player peut gagner au prochain moove, et retourne ce dernier pour le contrer
-    #Sinon, centre, puis corners, puis random
-    #IA reprise du site https://inventwithpython.com/chapter10.html (modifiée en fonction de mon code)
-    for i in range(1,10):
-        boardCopy = await getBoardCopy(board)
-        if await isSpaceFree(boardCopy, i):
-            if await movePlayer(boardCopy, player2, i):
-                if await hasWon(boardCopy, player2):
-                    return i
-    for i in range(1, 10):
-        boardCopy = await getBoardCopy(board)
-        if await isSpaceFree(boardCopy, i):
-            if await movePlayer(boardCopy, player1, i):
-                if await hasWon(boardCopy, player1):
-                    return i
+@bot.command(description='Stop the game')
+async def stop():
+    """ Stop the current game"""
+    global isPlaying
+    isPlaying = False
 
-    #Centre
-    if await isSpaceFree(board, 5):
-        return 5
-    #Corners
-    for i in range(1,3, 2):
-        if await isSpaceFree(board, i):
-            return i
-    for i in range(7,9,2):
-        if await isSpaceFree(board, i):
-            return i   
-    #Sinon, nombre random
-    i = random.randint(1, 10)
-    while not await isSpaceFree(boardCopy, i):
-        i = i + 1
-    return i  
-   
-    
-    
-async def getBoardCopy(b):
-     # Make a duplicate of the board list and return it the duplicate.
-     boardCopy = []
-
-     for i in b:
-         boardCopy.append(i)
-
-     return boardCopy
-     
-@bot.command(description='Play a game of tictactoe')   
+@bot.command(description='Play a game of tictactoe')
 async def move(*miniToe : int):
     """Play a game of TicTacToe with the bot."""
     
@@ -169,7 +127,8 @@ async def move(*miniToe : int):
         await bot.say('Partie finie')
         isPlaying = False
         playVSPC = False
- 
+
+        
 async def isValid(move):
     """Is valid ?"""
     if move >= 1 and move <= 9:
@@ -177,14 +136,63 @@ async def isValid(move):
     else:
         return False
  
+
+async def getMoveBot():
+    """Move from the bot"""
+    global player2
+    #On test le moove du bot sur une copy du board
+    #Si le moove fait du bot un gagnant, retourne ce moove (i)
+    #Sinon, test si le player peut gagner au prochain moove, et retourne ce dernier pour le contrer
+    #Sinon, centre, puis corners, puis random
+    #IA reprise du site https://inventwithpython.com/chapter10.html (modifiée en fonction de mon code)
+    for i in range(1,10):
+        boardCopy = await getBoardCopy(board)
+        if await isSpaceFree(boardCopy, i):
+            if await movePlayer(boardCopy, player2, i):
+                if await hasWon(boardCopy, player2):
+                    return i
+    for i in range(1, 10):
+        boardCopy = await getBoardCopy(board)
+        if await isSpaceFree(boardCopy, i):
+            if await movePlayer(boardCopy, player1, i):
+                if await hasWon(boardCopy, player1):
+                    return i
+
+    #Centre
+    if await isSpaceFree(board, 5):
+        return 5
+    #Corners
+    for i in range(1,3, 2):
+        if await isSpaceFree(board, i):
+            return i
+    for i in range(7,9,2):
+        if await isSpaceFree(board, i):
+            return i   
+    #Sinon, nombre random
+    i = random.randint(1, 10)
+    while not await isSpaceFree(boardCopy, i):
+        i = i + 1
+    return i  
+   
+    
+    
+async def getBoardCopy(b):
+     # Make a duplicate of the board list and return it the duplicate.
+     boardCopy = []
+
+     for i in b:
+         boardCopy.append(i)
+
+     return boardCopy
  
+
 async def movePlayer(b, player, move):
     """Place move on the board"""
 
     if await isValid(move) and (await isSpaceFree(b, move)):
         b[move] = player
         return True
-        
+
     else:
         return False
 
@@ -192,16 +200,16 @@ async def movePlayer(b, player, move):
 async def hasWon(board, player):
         '''Def the win condition'''
 
-        
+
         #any(all(x == player for x in board[i::3])
         #    for i in range(3))
-            
+
         #any(all(x == player for x in board[i:i+3])
         #    for i in range(0, 9, 3))
-            
+
         #any(all(x == player for x in board[s])
         #    for s in (slice(0,9,4), slice(2,7,2))
-         
+
         for i in range(1,4):
             #vérification des colonnes
             if(board[i] == board[(i+3)] and board[i] == board[(i+6)] == player):
@@ -218,13 +226,15 @@ async def hasWon(board, player):
            board[3] == board[5] == player and board[5] == board[7]):
             return True
 
-        
+          
+
 async def initBoard():
     """Initialize the board"""
-    
+
     global board
     board = [':white_medium_square:'] * 10
 
+    
 async def isBoardFull(b):
         """Return true if the board is full"""
         for i in range(1, 10):
@@ -236,27 +246,26 @@ async def isSpaceFree(b, position):
     """Is the place is free ?"""
 
     return b[position] == ':white_medium_square:'
-  
-  
+
 async def draw():
     """Draw the board"""
-    
-    result = ''
+
+    result = '\n'
     for i in range(1, 10):
         if i%3 == 0:
             result +=  board[i] + '\n'
         else:
             result += board[i]
-            
+
     await bot.say('\n' + result)
     #await bot.say('\n' + board[1] + board[2] +board[3] + '\n' + board[4] + board[5] + board[6] + '\n' + board[7] +board[8] +board[9])
- 
+
 async def startGame():
     """Start the game, randomly choose who will be first."""
-    
+
     await initBoard()
-    await draw()   
+    await draw()
     await bot.say("Let's play!")
-   
+
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
