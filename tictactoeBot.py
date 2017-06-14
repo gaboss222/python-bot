@@ -17,6 +17,8 @@ playVSPC = False
 board = 0
 player1Name = '';
 player2Name = '';
+player1Id = '';
+player2Id = '';
 
 player1 = ':x:'
 player2 = ':o:'
@@ -32,6 +34,8 @@ async def play(ctx):
     global isPlaying
     global bot
     global player1Name
+    global player1Id
+    global player2Id
     global playPlayer1
 
     if not isPlaying : #and len(name)==0:
@@ -39,7 +43,8 @@ async def play(ctx):
         isPlaying = True
         playPlayer1 = True
         player1Name = ctx.message.author.name
-        await bot.say('À '+player1Name+' de jouer.')
+        player1Id = ctx.message.author.id
+        await bot.say('À <@!'+player1Id+'> de jouer.')
     else:
         await bot.say('Une partie est en cours.')
 
@@ -49,6 +54,8 @@ async def playSolo(ctx):
 
     global isPlaying
     global playPlayer1
+    global player1Id
+    global player2Id
     global player1Name
     global playVSPC
     if not isPlaying :
@@ -58,7 +65,7 @@ async def playSolo(ctx):
         player2Name = ''
         player1Name = ctx.message.author.name
         playVSPC = True
-        await bot.say('À '+player1Name+' de jouer.')
+        await bot.say('À <@!'+player1Id+'> de jouer.')
     else:
         await bot.say('Une partie est en cours.')
 
@@ -80,6 +87,8 @@ async def move(ctx, *miniToe : int):
     global playPlayer1
     global player1Name
     global player2Name
+    global player1Id
+    global player2Id
     global playVSPC
     boardFull = False
 
@@ -102,12 +111,13 @@ async def move(ctx, *miniToe : int):
                                             else:
                                                 playPlayer1 = False
                                                 if player2Name != '' :
-                                                    await bot.say('À '+player2Name+' de jouer.')
+                                                    await bot.say('À <@!'+player2Id+'> de jouer.')
                                                 else:
                                                     await bot.say('Au tour du deuxième joueur.')
                             else:
                                 if player2Name == '' :
                                     player2Name = ctx.message.author.name
+                                    player2Id = ctx.message.author.id
                                 if player2Name == ctx.message.author.name :
                                     if movePlayer(board, player2, move):
                                         await draw()
@@ -119,7 +129,7 @@ async def move(ctx, *miniToe : int):
                                                 boardFull = True
                                             else:
                                                 playPlayer1 = True
-                                                await bot.say('À '+player1Name+' de jouer.')
+                                                await bot.say('À <@!'+player1Id+'> de jouer.')
                     else:
                         await bot.say('Entrez un nombre de 1 à 9.')
             else:
