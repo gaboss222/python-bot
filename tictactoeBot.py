@@ -62,6 +62,7 @@ async def playSolo(ctx):
     global isPlaying
     global playPlayer1
     global player1Id
+    global player2Id
     global player1Name
     global playVSPC
     if not isPlaying :
@@ -69,7 +70,6 @@ async def playSolo(ctx):
         isPlaying = True
         playPlayer1 = True
         player1Name = ctx.message.author.name
-        player1Id = ctx.message.author.id
         playVSPC = True
         await bot.say('À <@!'+player1Id+'> de jouer.')
     else:
@@ -109,12 +109,13 @@ async def move(ctx, *miniToe : int):
             if not playVSPC:
                     if len(miniToe)>0 and isValid(miniToe[0]):
                             move = miniToe[0]
+
                             if playPlayer1:
                                 if player1Name == ctx.message.author.name :
                                     if movePlayer(board, player1, move):
                                         await draw()
                                         if hasWon(board, player1):
-                                            await bot.say('<@!'+player1Id+'> a gagné!')
+                                            await bot.say(player1Name+' a gagné!')
                                             winner = True
                                         else:
                                             if isBoardFull(board):
@@ -129,14 +130,16 @@ async def move(ctx, *miniToe : int):
                                                 else:
                                                     await bot.say('Au tour du deuxième joueur.')
                             else:
-                                getPlayer2Info(ctx.message.author.name, ctx.message.author.id)                                
+                                if player2Name == '':
+                                    player2Name = ctx.message.author.name
+                                    player2Id = ctx.message.author.id
                                 if player2Name == ctx.message.author.name :
                                     if player2Id == '':
                                         player2Id = ctx.message.author.id
                                     if movePlayer(board, player2, move):
                                         await draw()
                                         if hasWon(board, player2):
-                                            await bot.say('<@!'+player2Id+'> a gagné!')
+                                            await bot.say(player2Name+' a gagné!')
                                             winner = True
                                         else:
                                             if isBoardFull(board):
@@ -152,18 +155,18 @@ async def move(ctx, *miniToe : int):
                             if movePlayer(board, player1, move):
                                 await draw()
                                 if hasWon(board, player1):
-                                    await bot.say('<@!'+player1Id+'> a gagné!')
+                                    await bot.say(player1Name+' a gagné!')
                                     winner = True
                                 else:
                                     if isBoardFull(board):
                                         boardFull = True
                                     else:
-                                        await bot.say('Le bot joue...')
+                                        await bot.say('À PC de jouer.')
                                         moveBot = await getMoveBot()
                                         if movePlayer(board, player2, moveBot):
                                             await draw()
                                             if hasWon(board, player2):
-                                                await bot.say("Le bot a gagné!")
+                                                await bot.say("PC a gagné!")
                                                 winner = True
                                             elif isBoardFull(board):
                                                 boardFull = True
@@ -177,16 +180,6 @@ async def move(ctx, *miniToe : int):
         isPlaying = False
         playVSPC = False
 
-
-def getPlayer2Info(name, id):
-    """Get info for player 2"""
-    global player2Name
-    global player2Id
-    if player2Name == '':
-        player2Name = name
-        player2Id = id
-    
-        
 def isValid(move):
     """Return true if input within [1;9]."""
 
@@ -230,7 +223,7 @@ async def getMoveBot():
             return i
 
     #Sinon, nombre random
-    i = random.randint(1, 9)
+    i = random.randint(1, 10)
     while not isSpaceFree(boardCopy, i):
         i = i + 1
 
@@ -264,13 +257,13 @@ def hasWon(board, player):
 
 
         #any(all(x == player for x in board[i::3])
-        #    for i in range(3)):
+        #    for i in range(3))
 
         #any(all(x == player for x in board[i:i+3])
         #    for i in range(0, 9, 3))
 
         #any(all(x == player for x in board[s])
-        #    for s in (slice(0,9,4), slice(2,7,2)))
+        #    for s in (slice(0,9,4), slice(2,7,2))
 
         for i in range(1,4):
             #vérification des colonnes
@@ -321,6 +314,7 @@ async def draw():
             result += board[i]
 
     await bot.say('\n' + result)
+    #await bot.say('\n' + board[1] + board[2] +board[3] + '\n' + board[4] + board[5] + board[6] + '\n' + board[7] +board[8] +board[9])
 
 async def startGame():
     """Start the game, randomly choose who will be first."""
