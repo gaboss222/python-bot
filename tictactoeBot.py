@@ -122,6 +122,7 @@ async def move(ctx, *miniToe : int):
                                         else:
                                             if isBoardFull(board):
                                                 boardFull = True
+                                                messageDisplay += f'\nIl n\'y a pas de gagnant.'
                                             else:
                                                 playPlayer1 = False
                                                 if player2Name != '' :
@@ -162,6 +163,7 @@ async def move(ctx, *miniToe : int):
                                 else:
                                     if isBoardFull(board):
                                         boardFull = True
+                                        messageDisplay += f'\nIl n\'y a pas de gagnant.'
                                     else:
                                         #messageDisplay += '\nLe bot joue...'
                                         moveBot = getMoveBot()
