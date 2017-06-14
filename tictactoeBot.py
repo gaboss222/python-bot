@@ -26,19 +26,25 @@ log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
 @bot.command(description='Play TicTacToe against another player (default).', pass_context=True)
-async def play(ctx):
+async def play(ctx, name2: str, *name2bis: str):
     """Play TicTacToe against another player."""
 
     global isPlaying
     global bot
     global player1Name
     global playPlayer1
+    global player2Name
 
     if not isPlaying : #and len(name)==0:
         await startGame()
         isPlaying = True
         playPlayer1 = True
         player1Name = ctx.message.author.name
+        #ICI --> Récupérer pseudo 2 (passé en paramète)
+        if len(name2bis)>0:
+            player2Name = name2 + name2bis
+        else:
+            player2Name = name2
         await bot.say('À '+player1Name+' de jouer.')
     else:
         await bot.say('Une partie est en cours.')
@@ -106,9 +112,8 @@ async def move(ctx, *miniToe : int):
                                                 else:
                                                     await bot.say('Au tour du deuxième joueur.')
                             else:
-                                if player2Name == '' :
-                                    player2Name = ctx.message.author.name
-                                if player2Name == ctx.message.author.name :
+                            #Si le pseudo 2 = autheur du message, et auteur du msg != player1, alors player 2 joue 
+                                if player2Name == ctx.message.author.name and ctx.message.author.name != player1Name :
                                     if movePlayer(board, player2, move):
                                         await draw()
                                         if hasWon(board, player2):
@@ -120,6 +125,8 @@ async def move(ctx, *miniToe : int):
                                             else:
                                                 playPlayer1 = True
                                                 await bot.say('À '+player1Name+' de jouer.')
+                                else:
+                                    await bot.say('YOU SHALL NOT PASS')
                     else:
                         await bot.say('Entrez un nombre de 1 à 9.')
             else:
@@ -264,10 +271,11 @@ def initBoard():
 def isBoardFull(b):
         """Return true if the board is full."""
         for i in range(1, 10):
-            if b[i] == ':white_medium_square:':
-                return False
+            return False
         return True
+        #return ':white_medium_square:' in b
 
+        
 def isSpaceFree(b, position):
     """Return true if the place you want to place your pawn on is free."""
 
