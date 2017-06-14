@@ -123,7 +123,7 @@ async def move(ctx, *miniToe : int):
                                                 playPlayer1 = False
                                                 if player2Name != '' :
                                                     if player2Id == '' :
-                                                        await bot.say('À <@'+player2Name+'> de jouer.')
+                                                        await bot.say('À '+player2Name+' de jouer.')
                                                     else:
                                                         await bot.say('À <@!'+player2Id+'> de jouer.')
                                                 else:
