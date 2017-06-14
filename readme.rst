@@ -16,16 +16,18 @@ et Florian Fasmeyer
 	 7 | 8 | 9 ::
 	 
 
++============+============+===========+ 
+|     1      |      2     |     3     | 
 +------------+------------+-----------+ 
-| 1 | 2 | 3 | 
+|     4      |      5     |     6     |
 +------------+------------+-----------+ 
-| 4 | 5 | 6 |
+|     7      |      8     |     9     |
 +------------+------------+-----------+ 
 
 
 Ce bot permet de jouer une partie de Tic-Tac-Toe sur Discord.
 
-Commencez une partie avec !play, !play <nomJoueur> ou !playSolo
+Commencez une partie avec !play, !play <nomJoueur> ou !playSolo.
 
 - !move X pour placer votre "pion" sur la case X (1-9)
 
