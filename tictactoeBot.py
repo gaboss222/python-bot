@@ -5,7 +5,7 @@ import random
 import asyncio
 import logging
 
-"""A bot capable of playing ticTacToe and do many other useless things, enjoy."""
+"""A bot capable of playing ticTacToe."""
 
 description = """Python bot project by Florian Fasmeyer & Gabriel Grigri."""
 bot = commands.Bot(command_prefix='!', description=description)
@@ -15,19 +15,22 @@ isPlaying = False
 playVSPC = False
 
 board = 0
-player1Name = '';
-player2Name = '';
-player1Id = '';
-player2Id = '';
+player1Name = ''
+player2Name = ''
+player1Id = ''
+player2Id = ''
 
 player1 = ':x:'
 player2 = ':o:'
 
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler())
-#logging.basicConfig(level=logging.INFO)
+# log.setLevel(logging.DEBUG)
+# log.addHandler(logging.StreamHandler())
+# logging.basicConfig(level=logging.INFO)
 
-@bot.command(description='Play TicTacToe against another player (default).', pass_context=True)
+
+@bot.command(
+    description='Play TicTacToe against another player (default).',
+    pass_context=True)
 async def play(ctx, *name2: str):
     """Play TicTacToe against another player."""
 
@@ -41,7 +44,7 @@ async def play(ctx, *name2: str):
     player2Name = ''
     messageDisplay = ''
 
-    if not isPlaying : #and len(name)==0:
+    if not isPlaying:
         isPlaying = True
         playPlayer1 = True
         player1Name = ctx.message.author.name
@@ -49,15 +52,18 @@ async def play(ctx, *name2: str):
         player2Id = ''
         messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
         messageDisplay += startGame()
-        #ICI --> Récupérer pseudo 2 (passé en paramète)
-        if len(name2)>0:
+
+        if len(name2) > 0:
             player2Name = name2[0]
     else:
         messageDisplay += '\nUne partie est en cours.'
 
     await bot.say(messageDisplay)
 
-@bot.command(description='Play TicTacToe against the PC.',  pass_context=True)
+
+@bot.command(
+    description='Play TicTacToe against the PC.',
+    pass_context=True)
 async def playSolo(ctx):
     """Play TicTacToe against the PC."""
 
@@ -68,7 +74,7 @@ async def playSolo(ctx):
     global playVSPC
     messageDisplay = ''
 
-    if not isPlaying :
+    if not isPlaying:
         isPlaying = True
         playPlayer1 = True
         player1Name = ctx.message.author.name
@@ -80,19 +86,26 @@ async def playSolo(ctx):
         messageDisplay += '\nUne partie est en cours.'
     await bot.say(messageDisplay)
 
-@bot.command(description='Stop the current game.',  pass_context=True)
+
+@bot.command(
+    description='Stop the current game.',
+    pass_context=True)
 async def stop(ctx):
     """Stop the current game."""
     global isPlaying
     if isPlaying:
-        if ctx.message.author.name == player1Name or ctx.message.author.name == player2Name:
+        if ctx.message.author.name == player1Name
+        or ctx.message.author.name == player2Name:
             isPlaying = False
             await bot.say('\nFin de la partie.')
     else:
         await bot.say('\nAucune partie en cours')
 
-@bot.command(pass_context=True, description='Make a move on the TicTacToe board (after starting a game).')
-async def move(ctx, *miniToe : int):
+
+@bot.command(
+    pass_context=True,
+    description='Make a move on the TicTacToe board (after starting a game).')
+async def move(ctx, *miniToe: int):
     """Make a move on the TicTacToe board (after starting a game)."""
 
     global isPlaying
@@ -111,47 +124,47 @@ async def move(ctx, *miniToe : int):
     if isPlaying:
         if not winner:
             if not playVSPC:
-                    if len(miniToe)>0 and isValid(miniToe[0]):
-                            move = miniToe[0]
-                            if playPlayer1:
-                                if player1Name == ctx.message.author.name :
-                                    if movePlayer(board, player1, move):
-                                        if hasWon(board, player1):
-                                            messageDisplay += f'\n<@!{player1Id}> a gagné!'
-                                            winner = True
-                                        else:
-                                            if isBoardFull(board):
-                                                boardFull = True
-                                                messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                if len(miniToe) > 0 and isValid(miniToe[0]):
+                    move = miniToe[0]
+                    if playPlayer1:
+                        if player1Name == ctx.message.author.name:
+                            if movePlayer(board, player1, move):
+                                if hasWon(board, player1):
+                                    messageDisplay += f'\n<@!{player1Id}> a gagné!'
+                                    winner = True
+                                else:
+                                    if isBoardFull(board):
+                                        boardFull = True
+                                        messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                                    else:
+                                        playPlayer1 = False
+                                        if player2Name != '' :
+                                            if player2Id == '' :
+                                                messageDisplay += f'\nÀ {player2Name} de jouer.'
                                             else:
-                                                playPlayer1 = False
-                                                if player2Name != '' :
-                                                    if player2Id == '' :
-                                                        messageDisplay += f'\nÀ {player2Name} de jouer.'
-                                                    else:
-                                                        messageDisplay += f'\nÀ <@!{player2Id}> de jouer.'
-                                                else:
-                                                    messageDisplay += '\nAu tour du deuxième joueur.'
-                                        messageDisplay += draw()
-                            else:
-                                getPlayer2Info(ctx.message.author.name, ctx.message.author.id)
-                                if player2Name == ctx.message.author.name :
-                                    if player2Id == '':
-                                        player2Id = ctx.message.author.id
-                                    if movePlayer(board, player2, move):
-                                        if hasWon(board, player2):
-                                            messageDisplay += f'\n<@!{player2Id}> a gagné!'
-                                            winner = True
+                                                messageDisplay += f'\nÀ <@!{player2Id}> de jouer.'
                                         else:
-                                            if isBoardFull(board):
-                                                boardFull = True
-                                                messageDisplay += f'\nIl n\'y a pas de gagnant.'
-                                            else:
-                                                playPlayer1 = True
-                                                messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
-                                        messageDisplay += draw()
+                                            messageDisplay += '\nAu tour du deuxième joueur.'
+                                messageDisplay += draw()
                     else:
-                        messageDisplay += '\nEntrez un nombre de 1 à 9.'
+                        getPlayer2Info(ctx.message.author.name, ctx.message.author.id)
+                        if player2Name == ctx.message.author.name :
+                            if player2Id == '':
+                                player2Id = ctx.message.author.id
+                            if movePlayer(board, player2, move):
+                                if hasWon(board, player2):
+                                    messageDisplay += f'\n<@!{player2Id}> a gagné!'
+                                    winner = True
+                                else:
+                                    if isBoardFull(board):
+                                        boardFull = True
+                                        messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                                    else:
+                                        playPlayer1 = True
+                                        messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
+                                messageDisplay += draw()
+                else:
+                    messageDisplay += '\nEntrez un nombre de 1 à 9.'
             else:
                 if len(miniToe)>0:
                             move = miniToe[0]
