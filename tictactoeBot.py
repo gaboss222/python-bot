@@ -46,6 +46,7 @@ async def play(ctx, *name2: str):
         playPlayer1 = True
         player1Name = ctx.message.author.name
         player1Id = ctx.message.author.id
+        player2Id = ''
         await bot.say('À <@!'+player1Id+'> de jouer.')
 
         #ICI --> Récupérer pseudo 2 (passé en paramète)
@@ -129,7 +130,6 @@ async def move(ctx, *miniToe : int):
                                                 else:
                                                     await bot.say('Au tour du deuxième joueur.')
                             else:
-                            #Si le pseudo 2 = autheur du message, et auteur du msg != player1, alors player 2 joue
                                 if player2Name == '':
                                     player2Name = ctx.message.author.name
                                     player2Id = ctx.message.author.id
@@ -176,6 +176,7 @@ async def move(ctx, *miniToe : int):
         await bot.say("Aucune partie en cours.")
 
     if winner or boardFull:
+        await bot.say('Partie finie')
         isPlaying = False
         playVSPC = False
 
@@ -291,9 +292,10 @@ def initBoard():
 def isBoardFull(b):
         """Return true if the board is full."""
         for i in range(1, 10):
-            return False
+            if b[i] == ':white_medium_square:':
+                return False
         return True
-        #return ':white_medium_square:' in b
+        #return not ':white_medium_square:' in b
 
 
 def isSpaceFree(b, position):
