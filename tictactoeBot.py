@@ -28,7 +28,7 @@ log.addHandler(logging.StreamHandler())
 #logging.basicConfig(level=logging.INFO)
 
 @bot.command(description='Play TicTacToe against another player (default).', pass_context=True)
-async def play(ctx):
+async def play(ctx, *name2: str):
     """Play TicTacToe against another player."""
 
     global isPlaying
@@ -37,6 +37,8 @@ async def play(ctx):
     global player1Id
     global player2Id
     global playPlayer1
+    global player2Name
+    player2Name = ''
 
     if not isPlaying : #and len(name)==0:
         await startGame()
@@ -45,6 +47,10 @@ async def play(ctx):
         player1Name = ctx.message.author.name
         player1Id = ctx.message.author.id
         await bot.say('À <@!'+player1Id+'> de jouer.')
+
+        #ICI --> Récupérer pseudo 2 (passé en paramète)
+        if len(name2)>0:
+            player2Name = name2[0]
     else:
         await bot.say('Une partie est en cours.')
 
@@ -62,19 +68,24 @@ async def playSolo(ctx):
         await startGame()
         isPlaying = True
         playPlayer1 = True
-        player2Name = ''
         player1Name = ctx.message.author.name
         playVSPC = True
         await bot.say('À <@!'+player1Id+'> de jouer.')
     else:
         await bot.say('Une partie est en cours.')
 
-@bot.command(description='Stop the current game.')
-async def stop():
+@bot.command(description='Stop the current game.',  pass_context=True)
+async def stop(ctx):
     """Stop the current game."""
     global isPlaying
-    isPlaying = False
-    await bot.say('Fin de la partie.')
+    if isPlaying:
+        if ctx.message.author.name == player1Name or ctx.message.author.name == player2Name:
+            isPlaying = False
+            await bot.say('Fin de la partie.')
+        else:
+            await bot.say('Pas d\'accès')
+    else:
+        await bot.say('Aucune partie en cours')
 
 @bot.command(pass_context=True, description='Make a move on the TicTacToe board (after starting a game).')
 async def move(ctx, *miniToe : int):
@@ -111,14 +122,20 @@ async def move(ctx, *miniToe : int):
                                             else:
                                                 playPlayer1 = False
                                                 if player2Name != '' :
-                                                    await bot.say('À <@!'+player2Id+'> de jouer.')
+                                                    if player2Id == '' :
+                                                        await bot.say('À <@'+player2Name+'> de jouer.')
+                                                    else:
+                                                        await bot.say('À <@!'+player2Id+'> de jouer.')
                                                 else:
                                                     await bot.say('Au tour du deuxième joueur.')
                             else:
-                                if player2Name == '' :
+                            #Si le pseudo 2 = autheur du message, et auteur du msg != player1, alors player 2 joue
+                                if player2Name == '':
                                     player2Name = ctx.message.author.name
                                     player2Id = ctx.message.author.id
                                 if player2Name == ctx.message.author.name :
+                                    if player2Id == '':
+                                        player2Id = ctx.message.author.id
                                     if movePlayer(board, player2, move):
                                         await draw()
                                         if hasWon(board, player2):
@@ -274,9 +291,10 @@ def initBoard():
 def isBoardFull(b):
         """Return true if the board is full."""
         for i in range(1, 10):
-            if b[i] == ':white_medium_square:':
-                return False
+            return False
         return True
+        #return ':white_medium_square:' in b
+
 
 def isSpaceFree(b, position):
     """Return true if the place you want to place your pawn on is free."""
