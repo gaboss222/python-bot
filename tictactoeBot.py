@@ -29,7 +29,9 @@ log.addHandler(logging.StreamHandler())
 # logging.basicConfig(level=logging.INFO)
 
 
-@bot.command(description='Play TicTacToe against another player.', pass_context=True)
+@bot.command(
+    description='Play TicTacToe against another player.',
+    pass_context=True)
 async def play(ctx, *name2: str):
     """Play TicTacToe against another player."""
 
@@ -92,8 +94,8 @@ async def stop(ctx):
     """Stop the current game."""
     global isPlaying
     if isPlaying:
-        if (ctx.message.author.name == player1Name
-        or ctx.message.author.name == player2Name):
+        if (ctx.message.author.name == player1Name or
+                ctx.message.author.name == player2Name):
             isPlaying = False
             await bot.say('\nFin de la partie.')
     else:
@@ -122,76 +124,71 @@ async def move(ctx, *miniToe: int):
     if not isPlaying:
         await bot.say("\nAucune partie en cours.")
         return None
-    if not winner:
-        if not playVSPC:
-            if len(miniToe) > 0 and isValid(miniToe[0]):
-                move = miniToe[0]
-                if playPlayer1:
-                    if player1Name == ctx.message.author.name:
-                        if movePlayer(board, player1, move):
-                            if hasWon(board, player1):
-                                messageDisplay += f'\n<@!{player1Id}> a gagné!'
-                                winner = True
-                            else:
-                                if isBoardFull(board):
-                                    boardFull = True
-                                    messageDisplay += f'\nIl n\'y a pas de gagnant.'
-                                else:
-                                    playPlayer1 = False
-                                    if player2Name != '':
-                                        if player2Id == '':
-                                            messageDisplay += f'\nÀ {player2Name} de jouer.'
-                                        else:
-                                            messageDisplay += f'\nÀ <@!{player2Id}> de jouer.'
-                                    else:
-                                        messageDisplay += '\nAu tour du deuxième joueur.'
-                            messageDisplay += draw()
-                else:
-                    getPlayer2Info(ctx.message.author.name, ctx.message.author.id)
-                    if player2Name == ctx.message.author.name:
-                        if player2Id == '':
-                            player2Id = ctx.message.author.id
-                        if movePlayer(board, player2, move):
-                            if hasWon(board, player2):
-                                messageDisplay += f'\n<@!{player2Id}> a gagné!'
-                                winner = True
-                            else:
-                                if isBoardFull(board):
-                                    boardFull = True
-                                    messageDisplay += f'\nIl n\'y a pas de gagnant.'
-                                else:
-                                    playPlayer1 = True
-                                    messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
-                            messageDisplay += draw()
-            else:
-                messageDisplay += '\nEntrez un nombre de 1 à 9.'
-        else:
-            if len(miniToe) > 0:
-                        move = miniToe[0]
-                        if movePlayer(board, player1, move):
 
-                            if hasWon(board, player1):
-                                messageDisplay += f'\n<@!{player1Id}> a gagné!'
-                                winner = True
-                            else:
-                                if isBoardFull(board):
-                                    boardFull = True
-                                    messageDisplay += f'\nIl n\'y a pas de gagnant.'
-                                else:
-                                    # messageDisplay += '\nLe bot joue...'
-                                    moveBot = getMoveBot()
-                                    if movePlayer(board, player2, moveBot):
-                                        if hasWon(board, player2):
-                                            messageDisplay += "\nLe bot a gagné!"
-                                            winner = True
-                                        elif isBoardFull(board):
-                                            boardFull = True
-                                            messageDisplay += f'\nIl n\'y a pas de gagnant.'
-                                        else:
-                                            messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
-                            messageDisplay += draw()
+    if len(miniToe) > 0 and isValid(miniToe[0]):
+        move = miniToe[0]
+    else:
+        await bot.say("\nEntrez un nombre de 1 à 9.")
+        return None
+
+    if not playVSPC:
+        if playPlayer1 and player1Name == ctx.message.author.name:
+            if movePlayer(board, player1, move):
+                if hasWon(board, player1):
+                    messageDisplay += f'\n<@!{player1Id}> a gagné!'
+                    winner = True
+                elif isBoardFull(board):
+                    boardFull = True
+                    messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                else:
+                    playPlayer1 = False
+                    if player2Name != '':
+                        if player2Id == '':
+                            messageDisplay += f'\nÀ {player2Name} de jouer.'
+                        else:
+                            messageDisplay += f'\nÀ <@!{player2Id}> de jouer.'
+                    else:
+                        messageDisplay += '\nAu tour du deuxième joueur.'
+                messageDisplay += draw()
+        else:
+            getPlayer2Info(ctx.message.author.name, ctx.message.author.id)
+            if player2Name == ctx.message.author.name:
+                if player2Id == '':
+                    player2Id = ctx.message.author.id
+                if movePlayer(board, player2, move):
+                    if hasWon(board, player2):
+                        messageDisplay += f'\n<@!{player2Id}> a gagné!'
+                        winner = True
+                    else:
+                        if isBoardFull(board):
+                            boardFull = True
+                            messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                        else:
+                            playPlayer1 = True
+                            messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
+                    messageDisplay += draw()
+    else:
+        if movePlayer(board, player1, move):
+            if hasWon(board, player1):
+                messageDisplay += f'\n<@!{player1Id}> a gagné!'
+                winner = True
             else:
-                messageDisplay += '\nEntrez un nombre de 1 à 9.'
+                if isBoardFull(board):
+                    boardFull = True
+                    messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                else:
+                    # messageDisplay += '\nLe bot joue...'
+                    moveBot = getMoveBot()
+                    if movePlayer(board, player2, moveBot):
+                        if hasWon(board, player2):
+                            messageDisplay += "\nLe bot a gagné!"
+                            winner = True
+                        elif isBoardFull(board):
+                            boardFull = True
+                            messageDisplay += f'\nIl n\'y a pas de gagnant.'
+                        else:
+                            messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
+            messageDisplay += draw()
 
     if winner or boardFull:
         messageDisplay += '\nPartie terminée.'
@@ -214,10 +211,9 @@ def getPlayer2Info(name, id):
 def isValid(move):
     """Return true if input within [1;9]."""
 
-    if move >= 1 and move <= 9:
+    if move in {1, 2, 3, 4, 5, 6, 7, 8, 9}:
         return True
-    else:
-        return False
+    return False
 
 
 def getMoveBot():
@@ -298,16 +294,21 @@ def hasWon(board, player):
 
         for i in range(1, 4):
             # vérification des colonnes
-            if(board[i] == board[(i+3)] and board[i] == board[(i+6)] == player):
+            if(
+                    board[i] == board[(i+3)] and
+                    board[i] == board[(i+6)] == player):
                 return True
 
             # vérification des lignes
         for i in range(1, 8, 3):
-            if(board[i] == board[(i+1)] and board[i] == board[(i+2)] == player):
+            if(
+                    board[i] == board[(i+1)] and
+                    board[i] == board[(i+2)] == player):
                 return True
 
         # vérification des diagonales
-        if(board[1] == board[5] == player and board[5] == board[9] or
+        if(
+            board[1] == board[5] == player and board[5] == board[9] or
            board[3] == board[5] == player and board[5] == board[7]):
             return True
 
