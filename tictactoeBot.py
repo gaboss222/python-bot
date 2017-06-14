@@ -5,6 +5,7 @@ import random
 import asyncio
 import logging
 
+
 """A bot capable of playing ticTacToe."""
 
 description = """Python bot project by Florian Fasmeyer & Gabriel Grigri."""
@@ -22,15 +23,11 @@ player2Id = ''
 
 player1 = ':x:'
 player2 = ':o:'
-
-# log.setLevel(logging.DEBUG)
-# log.addHandler(logging.StreamHandler())
-# logging.basicConfig(level=logging.INFO)
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 
 
-@bot.command(
-    description='Play TicTacToe against another player (default).',
-    pass_context=True)
+@bot.command(description='Play TicTacToe against another player.', pass_context=True)
 async def play(ctx, *name2: str):
     """Play TicTacToe against another player."""
 
@@ -52,7 +49,6 @@ async def play(ctx, *name2: str):
         player2Id = ''
         messageDisplay += f'\nÀ <@!{player1Id}> de jouer.'
         messageDisplay += startGame()
-
         if len(name2) > 0:
             player2Name = name2[0]
     else:
@@ -166,7 +162,7 @@ async def move(ctx, *miniToe: int):
                 else:
                     messageDisplay += '\nEntrez un nombre de 1 à 9.'
             else:
-                if len(miniToe)>0:
+                if len(miniToe) > 0:
                             move = miniToe[0]
                             if movePlayer(board, player1, move):
 
@@ -178,7 +174,7 @@ async def move(ctx, *miniToe: int):
                                         boardFull = True
                                         messageDisplay += f'\nIl n\'y a pas de gagnant.'
                                     else:
-                                        #messageDisplay += '\nLe bot joue...'
+                                        # messageDisplay += '\nLe bot joue...'
                                         moveBot = getMoveBot()
                                         if movePlayer(board, player2, moveBot):
                                             if hasWon(board, player2):
@@ -225,12 +221,14 @@ def isValid(move):
 def getMoveBot():
     """Move from the bot."""
     global player2
-    #On test le move du bot sur une copy du board
-    #Si le moove fait du bot un gagnant, retourne ce move (i)
-    #Sinon, test si le player peut gagner au prochain move, et retourne ce dernier pour le contrer
-    #Sinon, centre, puis corners, puis random
-    #IA reprise du site https://inventwithpython.com/chapter10.html (modifiée en fonction de mon code)
-    for i in range(1,10):
+# On test le move du bot sur une copy du board
+# Si le moove fait du bot un gagnant, retourne ce move (i)
+# Si le player peut gagner au prochain move,
+# retourne ce dernier pour contrer
+# Sinon, centre, puis corners, puis random
+# IA reprise du site https://inventwithpython.com/chapter10.html
+# (modifiée en fonction de notre code)
+    for i in range(1, 10):
         boardCopy = getBoardCopy(board)
         if isSpaceFree(boardCopy, i):
             if movePlayer(boardCopy, player2, i):
@@ -243,19 +241,19 @@ def getMoveBot():
                 if hasWon(boardCopy, player1):
                     return i
 
-    #Centre
+    # Centre
     if isSpaceFree(board, 5):
         return 5
-    #Corners
-    for i in range(1,3, 2):
+    # Corners
+    for i in range(1, 3, 2):
         if isSpaceFree(board, i):
             return i
-    for i in range(7,9,2):
+    for i in range(7, 9, 2):
 
         if isSpaceFree(board, i):
             return i
 
-    #Sinon, nombre random
+    # Sinon, nombre random
     i = random.randint(1, 9)
     while not isSpaceFree(boardCopy, i):
         i = i + 1
@@ -263,16 +261,16 @@ def getMoveBot():
     return i
 
 
-
 def getBoardCopy(b):
+    """ Return a copy of the board, for local test"""
 
-     # Make a duplicate of the board list and return it the duplicate.
-     boardCopy = []
+    boardCopy = []
 
-     for i in b:
-         boardCopy.append(i)
+    for i in b:
+        boardCopy.append(i)
 
-     return boardCopy
+    return boardCopy
+
 
 def movePlayer(b, player, move):
     """Place move on the board."""
@@ -288,32 +286,29 @@ def movePlayer(b, player, move):
 def hasWon(board, player):
         '''Def the win condition'''
 
-
-        #any(all(x == player for x in board[i::3])
+        # any(all(x == player for x in board[i::3])
         #    for i in range(3)):
 
-        #any(all(x == player for x in board[i:i+3])
+        # any(all(x == player for x in board[i:i+3])
         #    for i in range(0, 9, 3))
 
-        #any(all(x == player for x in board[s])
+        # any(all(x == player for x in board[s])
         #    for s in (slice(0,9,4), slice(2,7,2)))
 
-        for i in range(1,4):
-            #vérification des colonnes
+        for i in range(1, 4):
+            # vérification des colonnes
             if(board[i] == board[(i+3)] and board[i] == board[(i+6)] == player):
                 return True
 
-            #vérification des lignes
-        for i in range(1,8,3):
+            # vérification des lignes
+        for i in range(1, 8, 3):
             if(board[i] == board[(i+1)] and board[i] == board[(i+2)] == player):
                 return True
 
-
-        #vérification des diagonales
+        # vérification des diagonales
         if(board[1] == board[5] == player and board[5] == board[9] or
            board[3] == board[5] == player and board[5] == board[7]):
             return True
-
 
 
 def initBoard():
@@ -322,13 +317,15 @@ def initBoard():
     global board
     board = [':white_medium_square:'] * 10
 
+
 def isBoardFull(b):
         """Return true if the board is full."""
+
         for i in range(1, 10):
             if b[i] == ':white_medium_square:':
                 return False
         return True
-        #return not ':white_medium_square:' in b
+        # return not ':white_medium_square:' in b
 
 
 def isSpaceFree(b, position):
@@ -336,22 +333,25 @@ def isSpaceFree(b, position):
 
     return b[position] == ':white_medium_square:'
 
+
 def draw():
     """Draw the board"""
 
     result = ''
     for i in range(1, 10):
-        if i%3 == 0:
-            result +=  board[i] + '\n'
+        if i % 3 == 0:
+            result += board[i] + '\n'
         else:
             result += board[i]
 
     return '\n\n' + result
+
 
 def startGame():
     """Start the game, randomly choose who will be first."""
 
     initBoard()
     return draw()
+
 
 bot.run("MzE0NjYwOTMxMTIyNDk1NDg4.C_7aWg.gr69xOwZ54dBhSQ3y7cff89GsxQ")
