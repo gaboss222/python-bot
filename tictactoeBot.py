@@ -23,8 +23,8 @@ player2Id = ''
 player1 = ':x:'
 player2 = ':o:'
 
-# log.setLevel(logging.DEBUG)
-# log.addHandler(logging.StreamHandler())
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler())
 # logging.basicConfig(level=logging.INFO)
 
 
@@ -94,8 +94,8 @@ async def stop(ctx):
     """Stop the current game."""
     global isPlaying
     if isPlaying:
-        if ctx.message.author.name == player1Name
-        or ctx.message.author.name == player2Name:
+        if (ctx.message.author.name == player1Name
+        or ctx.message.author.name == player2Name):
             isPlaying = False
             await bot.say('\nFin de la partie.')
     else:
@@ -121,7 +121,9 @@ async def move(ctx, *miniToe: int):
     boardFull = False
     messageDisplay = ''
 
-    if isPlaying:
+    if not isPlaying:
+        await bot.say("\nAucune partie en cours.")
+        return None
         if not winner:
             if not playVSPC:
                 if len(miniToe) > 0 and isValid(miniToe[0]):
@@ -192,8 +194,6 @@ async def move(ctx, *miniToe: int):
                                 messageDisplay += draw()
                 else:
                     messageDisplay += '\nEntrez un nombre de 1 à 9.'
-    else:
-        messageDisplay += "\nAucune partie en cours."
 
     if winner or boardFull:
         messageDisplay += '\nPartie terminée.'
@@ -225,11 +225,12 @@ def isValid(move):
 def getMoveBot():
     """Move from the bot."""
     global player2
-    #On test le move du bot sur une copy du board
-    #Si le moove fait du bot un gagnant, retourne ce move (i)
-    #Sinon, test si le player peut gagner au prochain move, et retourne ce dernier pour le contrer
-    #Sinon, centre, puis corners, puis random
-    #IA reprise du site https://inventwithpython.com/chapter10.html (modifiée en fonction de mon code)
+    '''On test le move du bot sur une copy du board.
+    Si le moove fait du bot un gagnant, retourne ce move (i).
+    Sinon, test si le player peut gagner au prochain move,
+    et retourne ce dernier pour le contrer. Sinon, centre,
+    puis corners, puis random. IA reprise et modifiée du site
+    https://inventwithpython.com/chapter10.html.'''
     for i in range(1,10):
         boardCopy = getBoardCopy(board)
         if isSpaceFree(boardCopy, i):
