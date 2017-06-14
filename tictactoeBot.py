@@ -138,8 +138,8 @@ async def move(ctx, *miniToe: int):
                                     messageDisplay += f'\nIl n\'y a pas de gagnant.'
                                 else:
                                     playPlayer1 = False
-                                    if player2Name != '' :
-                                        if player2Id == '' :
+                                    if player2Name != '':
+                                        if player2Id == '':
                                             messageDisplay += f'\nÀ {player2Name} de jouer.'
                                         else:
                                             messageDisplay += f'\nÀ <@!{player2Id}> de jouer.'
@@ -148,7 +148,7 @@ async def move(ctx, *miniToe: int):
                             messageDisplay += draw()
                 else:
                     getPlayer2Info(ctx.message.author.name, ctx.message.author.id)
-                    if player2Name == ctx.message.author.name :
+                    if player2Name == ctx.message.author.name:
                         if player2Id == '':
                             player2Id = ctx.message.author.id
                         if movePlayer(board, player2, move):
@@ -229,7 +229,7 @@ def getMoveBot():
     et retourne ce dernier pour le contrer. Sinon, centre,
     puis corners, puis random. IA reprise et modifiée du site
     https://inventwithpython.com/chapter10.html.'''
-    for i in range(1,10):
+    for i in range(1, 10):
         boardCopy = getBoardCopy(board)
         if isSpaceFree(boardCopy, i):
             if movePlayer(boardCopy, player2, i):
