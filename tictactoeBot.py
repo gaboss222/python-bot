@@ -24,8 +24,8 @@ player2Id = ''
 player1 = ':x:'
 player2 = ':o:'
 
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler())
+# log.setLevel(logging.DEBUG)
+# log.addHandler(logging.StreamHandler())
 # logging.basicConfig(level=logging.INFO)
 
 
@@ -323,11 +323,7 @@ def initBoard():
 def isBoardFull(b):
         """Return true if the board is full."""
 
-        for i in range(1, 10):
-            if b[i] == ':white_medium_square:':
-                return False
-        return True
-        # return not ':white_medium_square:' in b
+        return not ':white_medium_square:' in b
 
 
 def isSpaceFree(b, position):
